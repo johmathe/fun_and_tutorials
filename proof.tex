@@ -1,0 +1,107 @@
+\documentclass[english]{article}
+\usepackage[latin9]{inputenc}
+\usepackage{babel}
+\begin{document}
+
+\title{Finding the best meeting point}
+\author{johmathe@google.com}
+\maketitle
+
+\section{Problem}
+
+Given $N$ people in a manhattan-like city, find the best meeting
+point for all these people (they are not trying to score fitbit points,
+they just want to optimize their trajectory).
+
+
+\section{A failed attempt}
+
+Let's take the problem in one dimension as a first simplification
+(it is actually a separable problem). First idea: take the mean of
+all the coordinates. This is not the optimal solution, and there is
+a simple counter example for this: imagine 9 people are at coordinate
+0 and one other person is at 10. This means that people should meet
+at:
+
+\[
+\bar{x}=\frac{1}{N}\sum_{i=1}^{N}x_{i}=1.
+\]
+
+
+The total distance that people need to travel is then:
+
+\[
+d=\sum_{i=1}^{N}|x_{i}-\bar{x}|=18
+\]
+
+
+An obvious counter example is $\tilde{x}=0$. In that case, only the
+last person needs to travel to this meeting point, and the distance
+becomes:
+
+\[
+\tilde{d}=\sum_{i=1}^{N}|x-\tilde{x}|=10
+\]
+
+
+Since $d>\tilde{d}$ we can say that the mean doesn't give the best
+meeting point.
+
+
+\section{Proper demonstration}
+
+We build an objective (cost) function that returns the total distance
+travelled by people, with $\bar{x}$ and $\bar{y}$ our coordinates.
+Our goal will be to minimize it.
+
+\[
+\mbox{minimize }f(\bar{x},\bar{y})=\sum_{i=1}^{N}|x_{i}-x|+\sum_{i=1}^{N}|y_{i}-y|
+\]
+
+
+We see here that the function is separable. So we can minimize independently
+accross $\bar{x}$ and $\bar{y}$. 
+
+This function is (non-strictly) convex. In order to mininmize it,
+we can find the subgradient set of this function, and find for which
+value(s) of $\bar{x}$ and $\bar{y}$ it is equal to $0$ among the
+two axes - we use the subgradient since our function is not continous
+and doesn't have a derivative defined on the non-continous points%
+\footnote{This is just a generalization of the usual method of finding the global
+minimum of a continuous and strictly convex function (take the derivative and equate to 0)%
+}:
+
+\[
+G(\bar{x})=\sum_{i=1}^{N}\mbox{sign}(\mbox{\ensuremath{\bar{x}}}-x_{i})=0
+\]
+
+
+The solution for $\bar{x}$ and $\bar{y}$ is the median in this case
+(drawing a graph helps seeing why).
+
+\[
+\bar{x}=\mu_{\frac{1}{2}}(x)
+\]
+
+
+\[
+\bar{y}=\mu_{\frac{1}{2}}(y)
+\]
+
+
+
+\section{Solving the problem and complexity}
+
+Now that we know that the problem is just a median finding problem,
+we can take a simple approach which consists in sorting the data points
+with a well known alogrithm, and take the element from the middle
+if we have an odd number of elements, or average the two elements
+in the middle of the array if we have an even number of elements%
+\footnote{See definition of the median if rusty :)%
+}. This approach is $O(N\log N)$in average (the best theoeretical
+bound for comparaison based algorithms is $O(N\log N)$). We could
+also do better with a radix sort if all our coordinates are integers
+and get down to $O(N)$. There are also some median finding algorithms
+out there that have a complexity of $O(N)$.
+\end{document}
+

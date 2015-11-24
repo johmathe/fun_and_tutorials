@@ -14,6 +14,7 @@ Line::Line(Point* a, Point* b) {
 int Line::GetPointCount() const {
 	return points_.size();
 }
+
 void Line::AddPoints(Point* a, Point* b) {
 	points_.insert(a);
 	points_.insert(b);
@@ -24,5 +25,3 @@ void Line::PrintInfo() {
 		(*i)->PrintCoordinates();
 	}
 }
-
-
